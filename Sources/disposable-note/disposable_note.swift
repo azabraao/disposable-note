@@ -48,11 +48,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor
     private func setupMainMenu() {
         let mainMenu = NSMenu()
+
+        let appName = ProcessInfo.processInfo.processName
+
         let appMenuItem = NSMenuItem()
         mainMenu.addItem(appMenuItem)
 
         let appMenu = NSMenu()
-        let appName = ProcessInfo.processInfo.processName
         let quitTitle = "Quit \(appName)"
         let quitItem = NSMenuItem(
             title: quitTitle,
@@ -63,6 +65,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(quitItem)
 
         appMenuItem.submenu = appMenu
+
+        let editMenuItem = NSMenuItem()
+        mainMenu.addItem(editMenuItem)
+
+        let editMenu = NSMenu(title: "Edit")
+        editMenu.addItem(
+            NSMenuItem(
+                title: "Select All",
+                action: #selector(NSText.selectAll(_:)),
+                keyEquivalent: "a"
+            )
+        )
+        editMenuItem.submenu = editMenu
+
         NSApp.mainMenu = mainMenu
     }
 
