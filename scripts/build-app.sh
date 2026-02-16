@@ -15,6 +15,7 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 PLIST_PATH="$CONTENTS_DIR/Info.plist"
 EXECUTABLE_PATH="$BUILD_DIR/$PRODUCT_NAME"
+ICON_PATH="$ROOT_DIR/assets/AppIcon.icns"
 
 echo "Building release binary..."
 swift build -c release
@@ -31,6 +32,14 @@ mkdir -p "$MACOS_DIR" "$RESOURCES_DIR"
 cp "$EXECUTABLE_PATH" "$MACOS_DIR/$APP_NAME"
 chmod +x "$MACOS_DIR/$APP_NAME"
 
+if [[ ! -f "$ICON_PATH" ]]; then
+  echo "Error: icon not found at $ICON_PATH" >&2
+  echo "Run: ./scripts/generate-app-icon.sh" >&2
+  exit 1
+fi
+
+cp "$ICON_PATH" "$RESOURCES_DIR/AppIcon.icns"
+
 cat > "$PLIST_PATH" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -44,6 +53,8 @@ cat > "$PLIST_PATH" <<EOF
   <string>${BUNDLE_ID}</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
+  <key>CFBundleIconFile</key>
+  <string>AppIcon</string>
   <key>CFBundleName</key>
   <string>${APP_NAME}</string>
   <key>CFBundlePackageType</key>
