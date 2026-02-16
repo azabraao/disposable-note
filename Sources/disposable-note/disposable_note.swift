@@ -4,6 +4,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var window: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        setupMainMenu()
+
         let frame = NSRect(x: 0, y: 0, width: 300, height: 300)
         let window = NSWindow(
             contentRect: frame,
@@ -41,6 +43,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.makeFirstResponder(textView)
 
         self.window = window
+    }
+
+    @MainActor
+    private func setupMainMenu() {
+        let mainMenu = NSMenu()
+        let appMenuItem = NSMenuItem()
+        mainMenu.addItem(appMenuItem)
+
+        let appMenu = NSMenu()
+        let appName = ProcessInfo.processInfo.processName
+        let quitTitle = "Quit \(appName)"
+        let quitItem = NSMenuItem(
+            title: quitTitle,
+            action: #selector(NSApplication.terminate(_:)),
+            keyEquivalent: "q"
+        )
+        quitItem.keyEquivalentModifierMask = [.command]
+        appMenu.addItem(quitItem)
+
+        appMenuItem.submenu = appMenu
+        NSApp.mainMenu = mainMenu
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
